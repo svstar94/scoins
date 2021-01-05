@@ -19,11 +19,13 @@ from django.urls import path
 import os
 
 from assets.views import AssetsLV, AssetsDV
+from .views import MainView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     # class-based views
+    path('', MainView.as_view(), name='main'),
     path('assets/', AssetsLV.as_view(), name='index'),
     path('assets/<int:pk>/', AssetsDV.as_view(), name='detail'),
 ]

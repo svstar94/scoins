@@ -5,7 +5,7 @@ from django.utils import timezone
 # Create your models here.
 # 유저 자산 DB
 class Assets(models.Model):
-    userid = models.CharField('USERID', max_length=100, blank=False) # 유저 고유 아이디
+    userid = models.CharField('USERID', max_length=20, blank=False) # 유저 고유 아이디
     date = models.DateTimeField('DATE', default=timezone.now) # 시작 날짜
     freedps = models.IntegerField('FREEDPS', blank=True) # 자유입출금
     stock = models.IntegerField('STOCK', blank=True) # 주식
