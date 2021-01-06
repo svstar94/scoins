@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div style="border-radius: 1rem; margin: 2rem; text-align: center;">
+        <h1 style="font-family: 'Redressed', cursive;">
+            Main Screen
+        </h1>
+
+        <form action="/main/" method="POST">
+            {% csrf_token %}
+            <div>
+                <input type="text" name="hello_world_input">
+            </div>
+            <div>
+                <input type="submit" class="btn btn-primary" value="POST">
+            </div>
+        </form>
+
+        {% if asset_list %}
+            <h3>
+                데이터베이스에서 가져온 리스트
+            </h3>
+            {% for asset in asset_list %}
+            <h6 style="display: inline;">
+                {{ asset.code}} {{ asset.sise }}
+            </h6>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+
+{% endblock %}
