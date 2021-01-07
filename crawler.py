@@ -62,7 +62,7 @@ def stock(DB, stockcode=None):
                 values.append('"%s"'%stocks[-1].text.replace(',', ''))
 
                 # db에 입력
-                try: py2sql.insert(DB, 'main_stocks', stock_columns, ','.join(values))
+                try: py2sql.insert(DB, 'homeapp_stock', stock_columns, ','.join(values))
                 except: pass
 
 url_form = 'https://finance.naver.com'
@@ -71,36 +71,44 @@ url_form = 'https://finance.naver.com'
 # Table Name : 'main_news'
 def news(DB):
     print('뉴스 크롤링 시작')
-    dtstr = '20210104'
+    dtstr = datetime.now().date().strftime('%Y%m%d')
     news_columns = 'date, title, content, publisher, url'
-    BASE_URL = 'https://finance.naver.com/news/news_list.nhn?mode=RANK&date={}&page=1'
-    r = requests.get(BASE_URL.format(dtstr))
-    sp = BeautifulSoup(r.text, 'html.parser')
+    page=1
+    sample_news = None
+    while True:
+        BASE_URL = 'https://finance.naver.com/news/news_list.nhn?mode=RANK&date={}&page={}'
+        r = requests.get(BASE_URL.format(dtstr, page))
+        sp = BeautifulSoup(r.text, 'html.parser')
+        news_list = sp.select('div.hotNewsList > ul.newsList ul.simpleNewsList li')
+        if sample_news == news_list:
+            break
+        
+        for news in news_list:
+            news_urls = news.select('a')
+            values = []
+            for news_url in news_urls:
+                new_r = requests.get(url_form + news_url.attrs['href'])
+                new_sp = BeautifulSoup(new_r.text, 'html.parser')
+                body = new_sp.select_one('div.boardView')
 
-    news_list = sp.select('div.hotNewsList > ul.newsList ul.simpleNewsList li')
-    for news in news_list:
-        news_urls = news.select('a')
-        values = []
-        for news_url in news_urls:
-            new_r = requests.get(url_form + news_url.attrs['href'])
-            new_sp = BeautifulSoup(new_r.text, 'html.parser')
-            body = new_sp.select_one('div.boardView')
+                values.append('"%s"'%body.select_one('div.article_sponsor span.article_date').text)
+                values.append('"%s"'%body.select_one('div.article_info h3').text.strip().replace('"', '<dq>')) # title
+                values.append('"%s"'%body.select_one('div#content').text.strip().replace('"', '<dq>'))
+                values.append('"%s"'%body.select_one('div.sponsor img').attrs['title']) #publisher
+                values.append('"%s"'%body.select_one('div.article_sponsor a').attrs['href'])
 
-            values.append('"%s"'%body.select_one('div.article_sponsor span.article_date').text)
-            values.append('"%s"'%body.select_one('div.article_info h3').text.strip().replace('"', '<dq>')) # title
-            values.append('"%s"'%body.select_one('div#content').text.strip().replace('"', '<dq>'))
-            values.append('"%s"'%body.select_one('div.sponsor img').attrs['title']) #publisher
-            values.append('"%s"'%body.select_one('div.article_sponsor a').attrs['href'])
+                # db에 입력
+                py2sql.insert(DB, 'homeapp_news', news_columns, ','.join(values))
+                # try: 
+                # except: pass
 
-            # db에 입력
-            py2sql.insert(DB, 'main_news', news_columns, ','.join(values))
-            # try: 
-            # except: pass
+        page += 1
+        sample_news = news_list
 
 if __name__ == "__main__":
     Scoin_DB = py2sql.conn()
 
     # stock(Scoin_DB)
-    # news(Scoin_DB)
-    coin(Scoin_DB)
+    news(Scoin_DB)
+    # coin(Scoin_DB)
 

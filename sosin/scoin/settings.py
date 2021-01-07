@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'bootstrap4',
     # My Custom Apps
-    'assets.apps.AssetsConfig',
-    'main'
+    'accountapp',
+    'homeapp',
+    'assetapp',
+    
 ]
 
 MIDDLEWARE = [

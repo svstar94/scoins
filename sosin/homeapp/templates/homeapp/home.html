@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if not user.is_authenticated %}
+    <div style="text-align: center;">
+        <h1>
+            로그인 해주세요
+        </h1>
+    </div>
+    {% else %}
+    <div style="display: flex; width: 100%; height: 100%; font-size: .9rem; font-family: 'NanumSquareRoundOTFR'; text-align: center; flex-wrap: wrap;">
+        <div style="display: block; width: 50%; height: auto;">
+            <h3>
+                Top News Today
+            </h3>
+            <div class="container">
+                {% for news in news_list %}
+                <a href="{{ news.url }}" target="_blank">
+                    {% include 'snippets/news.html' with news=news %}
+                </a>
+                {% endfor %}
+            
+                {% include 'snippets/pagination.html' with page_obj=page_obj %}
+            </div>
+        </div>
+        
+
+        <div style="display: block; width: 50%; height: auto;">
+            {% if asset_list %}
+                <h3>Asset</h3>
+                <canvas id="pie-chart" width="100%" height="auto"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+                <script>
+                  var config = {
+                    type: 'pie',
+                    data: {
+                      datasets: [{
+                        data: {{ data|safe }},
+                        backgroundColor: [
+                          '#CC99FF', '#A9D1F7', '#B4F0A7', '#FFFFBF', '#FFDFBE', 'FFB1B0'
+                        ],
+                        label: 'Asset'
+                      }],
+                      labels: {{ labels|safe }}
+                    },
+                    options: {
+                      responsive: false
+                    }
+                  };
+              
+                  window.onload = function() {
+                    var ctx = document.getElementById('pie-chart').getContext('2d');
+                    window.myPie = new Chart(ctx, config);
+                  };
+              
+                </script>
+              
+            {% else %}
+                {% if target_user == user %}
+                <a href="{% url 'assetapp:create' %}"><h2>자산 정보 입력</h2></a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap;">
+            소유한 Coin 차트 화면 (드롭다운으로 정보 가져오기 + 검색으로 특정 코인 정보 가져오기)
+            {% if coin_list %}
+            <h2>Coin 정보 있음</h2>
+            {% endif %}
+        </div>
+
+        <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap;">
+            소유한 주식 차트 화면 (코인과 마찬가지)
+            {% if stock_list %}
+            <h2>Stock 정보 있음</h2>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}

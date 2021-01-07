@@ -15,17 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 
 import os
-
-from assets.views import AssetsLV, AssetsDV
-from .views import MainView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # class-based views
-    path('', include('main.urls')),
-    path('assets/', AssetsLV.as_view(), name='index'),
-    path('assets/<int:pk>/', AssetsDV.as_view(), name='detail'),
-]
+    # custom app urls
+    path('accounts/', include('accountapp.urls')),
+    path('home/', include('homeapp.urls')),
+    path('assets/', include('assetapp.urls'))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

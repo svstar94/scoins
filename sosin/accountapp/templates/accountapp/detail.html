@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div>
+        <div style="text-align: center; max-width: 600px; margin: 4rem auto;">
+
+
+            {% if target_user.asset_user %}
+                <h2>
+                    {{ target_user.username }}
+                </h2>
+                {% if target_user == user %}
+                <a href="{% url 'assetapp:update' pk=target_user.asset_user.pk %}">
+                    <span>Update Asset</span>
+                </a>
+                {% endif %}
+                <div class="mt-5">
+                    <h5>
+                        현재 자산 정보
+                    </h5>
+                    <!-- 자산 정보 -->
+                    {% for f, v in user_asset %}
+                    {% include 'snippets/card.html' with asset=v asset2=f %}
+                    {% endfor %}
+                </div>
+            </h2>
+            {% endif %}
+
+            {% if target_user == user %}
+            <a href="{% url 'accountapp:update' pk=user.pk %}">
+                <p>
+                    Change Info
+                </p>
+            </a>
+            <a href="{% url 'accountapp:delete' pk=user.pk %}">
+                <p>
+                    Quit
+                </p>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}
