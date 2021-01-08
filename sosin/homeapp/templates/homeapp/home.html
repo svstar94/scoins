@@ -24,12 +24,11 @@
                 {% include 'snippets/pagination.html' with page_obj=page_obj %}
             </div>
         </div>
-        
 
-        <div style="display: block; width: 50%; height: auto;">
+        <div style="display: block; width: 50%; height: auto; text-align:center;">
             {% if asset_list %}
                 <h3>Asset</h3>
-                <canvas id="pie-chart" width="100%" height="auto"></canvas>
+                <canvas id="pie-chart" style="display: inline;"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
                 <script>
                   var config = {
