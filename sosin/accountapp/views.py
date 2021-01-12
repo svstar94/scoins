@@ -24,8 +24,8 @@ has_ownership = [login_required, account_ownership_required]
 class AccountCreateView(CreateView):
     model = User
     form_class = UserCreationForm
-    success_url = reverse_lazy('accountapp:hello_world')
     template_name = 'accountapp/create.html'
+    success_url = reverse_lazy('accountapp:login')    
 
 from assetapp.models import Asset, id2ctg
 from scoin.tools import get_model_fields
@@ -35,12 +35,16 @@ class AccountDetailView(DetailView):
     template_name = 'accountapp/detail.html'
 
     def get_context_data(self, **kwargs):
-        asset_list = list(Asset.objects.filter(id=self.object.asset_user.id).values()[0].values())[3:]
-        asset_field = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
-        
         context = super(AccountDetailView, self).get_context_data(**kwargs)
-        context['user_asset'] = list(zip(asset_field, asset_list))
-        context['asset_object'] = Asset.objects.filter(id=self.object.asset_user.id)[0]
+        print(self.object.username)
+        try:
+            asset_list = list(Asset.objects.filter(id=self.object.asset_user.id).values()[0].values())[3:]
+            asset_field = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
+            context['user_asset'] = list(zip(asset_field, asset_list))
+            context['asset_object'] = Asset.objects.filter(id=self.object.asset_user.id)[0]
+        except:
+            pass
+        
         return context
 
 from .forms import AccountUpdateForm
@@ -51,8 +55,11 @@ class AccountUpdateView(UpdateView):
     model = User
     form_class = AccountUpdateForm
     context_object_name = 'target_user'
-    success_url = reverse_lazy('accountapp:hello_world')
     template_name = 'accountapp/update.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('accountapp:detail', kwargs={'pk':self.object.pk})
+
 
 @method_decorator(has_ownership, 'get')
 @method_decorator(has_ownership, 'post')

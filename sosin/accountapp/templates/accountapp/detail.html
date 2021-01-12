@@ -25,6 +25,10 @@
                     {% endfor %}
                 </div>
             </h2>
+            {% else %}
+                <a href="{% url 'assetapp:create' %}">
+                    <h2 style="font-family: NanumSquareB;">자산 정보 입력</h2>
+                </a>
             {% endif %}
 
             {% if target_user == user %}

@@ -11,6 +11,12 @@ from django.shortcuts import render
 from assetapp.models import Asset, id2ctg
 from scoin.tools import get_model_fields
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.urls import reverse
+
+from crawler import *
+
 class HomeView(ListView):
     model = News
     template_name = 'homeapp/home.html'
@@ -19,9 +25,19 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
+        paginator = context['paginator']
+        page_numbers_range = 5
+        max_index = len(paginator.page_range)
+        page = self.request.GET.get('page')
+        current_page = int(page) if page else 1
+        start_index = int((current_page - 1) / page_numbers_range) * page_numbers_range
+        end_index = start_index + page_numbers_range
+        if end_index >= max_index:
+            end_index = max_index
+        page_range = paginator.page_range[start_index:end_index]
+        context['page_range'] = page_range
+
         labels = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
-        context['coin_list'] = Coin.objects.all()
-        context['stock_list'] = Stock.objects.all()
 
         if self.request.user.is_authenticated:
             datas = Asset.objects.filter(id=self.request.user.asset_user.id).values()[0]
@@ -41,3 +57,94 @@ class HomeView(ListView):
 
         return context
 
+class CoinAPIView(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request): 
+        coin_id = request.GET.get('coin_id', '비트코인')
+        coin_search = CoinInfo.objects.filter(name=coin_id).values()
+        if len(coin_search) == 1:
+            coin_idx = coin_search[0]['id']
+            coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
+            if len(coin_list) != 0:
+                coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
+                data = {
+                    'check' : 1,
+                    'coin_list': coin_list,
+                    'coin_labels': coin_labels
+                }
+                return Response(data)
+        data = {
+            'check' : 0,
+            'check_info': '코인 정보가 없습니다.'
+        }
+        return Response(data)
+
+
+from multiprocessing import Process
+class StockAPIView(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request): 
+        stock_id = request.GET.get('stock_id', '삼성전자')
+        stock_idx = StockInfo.objects.filter(name=stock_id).values()
+        if len(stock_idx) == 1:
+            stock_idx = stock_idx[0]['id']
+            stock_list = list(reversed([stock.sise for stock in Stock.objects.filter(code_id=stock_idx)]))
+            if len(stock_list) == 0:
+                stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
+                # 크롤링 하는 경우
+                p = Process(target=stock_test, args=(stock_idx, stock_code, ))
+                p.start()
+                data = {
+                    'check' : 0,
+                    'check_info': '크롤링 중이거나 상장되지 않은 주식입니다.'
+                }
+                return Response(data)
+            stock_labels = [stock.date.strftime('%Y%m%d') for stock in Stock.objects.filter(code_id=stock_idx)]
+            
+            data = {
+                'check' : 1,
+                'stock_list': stock_list,
+                'stock_labels': stock_labels
+            }
+            return Response(data)
+        else:
+            # 상장정보가 아예 없는 경우
+            data = {
+                'check' : 0
+            }
+            return Response(data)
+
+class SearchCoinAPIView(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        keyword = request.GET.get('keyword', 'e')
+        results = CoinInfo.objects.filter(name__startswith=keyword).values()
+        data = {
+            'sr': [r['name'] for r in results]
+        }
+
+        return Response(data)
+
+
+class SearchStockAPIView(APIView):
+    
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request):
+        keyword = request.GET.get('keyword', 'e')
+        results = StockInfo.objects.filter(name__startswith=keyword).values()
+        data = {
+            'sr': [r['name'] for r in results]
+        }
+
+        return Response(data)

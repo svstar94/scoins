@@ -1,18 +1,37 @@
-<div style="text-align: center; margin: 1rem 0;">
-    {% if page_obj.has_previous %}
-    <a href="{% url 'homeapp:home' %}?page={{ page_obj.previous_page_number }}"
-    class="btn btn-secondary rounded-pill" style="display: inline; text-align: center; font-size: .7rem; margin: 0 1rem;">
-    {{ page_obj.previous_page_number }}
-    </a>
-    {% endif %}
-    <a href="{% url 'homeapp:home' %}?page={{ page_obj.number }}"
-    class="btn btn-secondary rounded-pill active" style="display: inline; text-align: center; font-size: .7rem; margin: 0 1rem;">
-    {{page_obj.number}}
-    </a>
-    {% if page_obj.has_next %}
-    <a href="{% url 'homeapp:home' %}?page={{ page_obj.next_page_number }}"
-        class="btn btn-secondary rounded-pill" style="display: inline; text-align: center; font-size: .7rem; margin: 0 1rem;">
-        {{ page_obj.next_page_number }}
-    </a>
-    {% endif %}
-</div>
+  <div style="margin: 1 auto; text-align: center;">
+    <ul class="pagination" style="display: inline-flex;">
+      {% if page_obj.has_previous %}
+        <li class="page">
+          <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary rounded-pill">
+            <span>Prev</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="disabled">
+          <a href="#" class="btn btn-secondary rounded-pill">
+            <span>Previous</span>
+          </a>
+        </li>
+      {% endif %}
+
+      {% for page in page_range %}
+        <li {% if page == page_obj.number %}class="active"{% endif %}>
+          <a href="?page={{ page }}" class="btn btn-gray rounded-pill">{{ page }}</a>
+        </li>
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page">
+          <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary rounded-pill">
+            <span>Next</span>
+          </a>
+        </li>
+      {% else %}
+        <li {% if not page_obj.has_next %}class="disabled"{% endif %}>
+          <a href="#" class="btn btn-secondary rounded-pill">
+            <span>Next</span>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>

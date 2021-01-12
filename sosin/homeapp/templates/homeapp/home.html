@@ -2,6 +2,7 @@
 
 {% block content %}
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     {% if not user.is_authenticated %}
     <div style="text-align: center;">
         <h1>
@@ -29,7 +30,6 @@
             {% if asset_list %}
                 <h3>Asset</h3>
                 <canvas id="pie-chart" style="display: inline;"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
                 <script>
                   var config = {
                     type: 'pie',
@@ -61,19 +61,269 @@
                 {% endif %}
             {% endif %}
         </div>
+      </div>
+      <hr/>
+      
+      <div style="display: flex; width: 100%; height: 100%; font-size: .9rem; font-family: 'NanumSquareRoundOTFR'; text-align: center; flex-wrap: wrap;">
+            <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap; padding: 1rem 5rem;">
+              <div style="text-align: center;">
+                <h3>코인 시세 차트</h3>
 
-        <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap;">
-            소유한 Coin 차트 화면 (드롭다운으로 정보 가져오기 + 검색으로 특정 코인 정보 가져오기)
-            {% if coin_list %}
-            <h2>Coin 정보 있음</h2>
-            {% endif %}
-        </div>
+                <input type="text" id="coin_id" placeholder="코인 이름 입력" onkeyup="coin_search()"/>
+                <button type="button" id="btn_coin" class="btn btn-dark rounded-pill">시세</button>
+                <div id="coin_dropdown" style="display: block;"></div>
+              </div>
+              <div id="coin_tainer" style="width: 100%; height: auto;">
 
-        <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap;">
-            소유한 주식 차트 화면 (코인과 마찬가지)
-            {% if stock_list %}
-            <h2>Stock 정보 있음</h2>
-            {% endif %}
+              </div>
+              <script src="https://code.highcharts.com/highcharts.src.js"></script>
+              <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+              <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+              <!-- 코인 차트 검색 -->
+              <script>
+                $('#btn_coin').on('click', (event) =>{
+                  var coin_id = $('#coin_id').val();
+                  $.ajax({
+                    url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+coin_id,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.check == 1) {
+                          Highcharts.chart('coin_tainer', {
+                              
+                              title: {
+                                  text: ''
+                                  },
+                              series: [{
+                                  name: "Coin",
+                                  data: data.coin_list
+                                  }],
+
+                              responsive: {
+                                  rules: [{
+                                      condition: {
+                                          maxWidth: 100
+                                      },
+                                      chartOptions: {
+                                          legend: {
+                                              layout: 'horizontal',
+                                              align: 'center',
+                                              verticalAlign: 'bottom'
+                                          }
+                                      }
+                                  }]
+                              }
+
+                          });
+                        }
+                        else {
+                          $('#coin_tainer').text( data.check_info )
+                        }
+                    }
+                  });
+                });
+              </script>
+              <!-- 코인 검색 Suggestion -->
+              <script>
+                function coin_search() {
+                  var keyword = $('#coin_id').val();
+                  if (keyword != ''){
+                    $.ajax({
+                    url: "{% url 'homeapp:coin_search_api' %}?keyword="+keyword,
+                    dataType: 'json',
+                    success: (data) => {
+                      $('#coin_dropdown').empty();
+                      
+                      for (var i=0; i < data.sr.length; i++) {
+                        var divtag = document.createElement('div');
+                        var aTag = document.createElement('a');
+                        divtag.setAttribute('style', 'display:inline-block; border:1px solid black; margin: 0.2rem 0.2rem;')
+                        aTag.setAttribute('onClick', 'func1(this)');
+                        aTag.setAttribute('style', '')
+                        aTag.innerText = data.sr[i];
+                        divtag.append(aTag);
+                        // alert(data.sr[i]);
+                        $('#coin_dropdown').append(divtag);
+                      }
+                    }
+                  });
+                  }
+                  else {
+                    $('#coin_dropdown').empty();
+                  }
+                }
+                function func1(ele) {
+                  document.getElementById("coin_id").value = ele.text;
+                  $('#coin_dropdown').empty();
+                  $.ajax({
+                      url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+ele.text,
+                      dataType: 'json',
+                      success: function (data) {
+                        if (data.check == 1){
+                          Highcharts.chart('coin_tainer', {
+                              title: {
+                                  text: ''
+                                  },
+                              series: [{
+                                  name: "Coin",
+                                  data: data.coin_list
+                                  }],
+
+                              responsive: {
+                                  rules: [{
+                                      condition: {
+                                          maxWidth: 500,
+                                      },
+                                      chartOptions: {
+                                          legend: {
+                                              layout: 'horizontal',
+                                              align: 'center',
+                                              verticalAlign: 'bottom'
+                                          }
+                                      }
+                                  }]
+                              }
+
+                          });
+                        }
+                        else {
+                          $('#coin_tainer').text( data.check_info );
+                        }
+                          
+                      }
+                    });
+                }
+              </script>
+              
+            </div>
+
+        <div style="display: inline-block; width: 50%; height: auto; flex-wrap: wrap; padding: 1rem 5rem;">
+          <div style="text-align: center;">
+            <h3>주식 시세 차트</h3>
+            <input type="text" id="stock_id" placeholder="주식 이름 입력" onkeyup="stock_search()"/>
+            <button type="button" id="btn_stock" class="btn btn-dark rounded-pill">시세</button>
+            <div id="stock_dropdown" style="display: block;"></div>
+            
+          </div>
+          <div id="stock_tainer" style="width: 100%; height: auto;">
+
+          </div>
+          <script src="https://code.highcharts.com/highcharts.src.js"></script>
+          <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+          <!-- 주식 차트 검색 -->
+          <script>
+            $('#btn_stock').on('click', (event)=>{
+              var stock_id = $('#stock_id').val()
+              $.ajax({
+                url: "{% url 'homeapp:stock_sise_api' %}?stock_id="+stock_id,
+                dataType: 'json',
+                success: function (data) {
+                  if (data.check == 1){
+                    Highcharts.chart('stock_tainer', {
+                        title: {
+                            text: ''
+                            },
+                        series: [{
+                            name: "Stock",
+                            data: data.stock_list
+                            }],
+
+                        responsive: {
+                            rules: [{
+                                condition: {
+                                    maxWidth: 500,
+                                },
+                                chartOptions: {
+                                    legend: {
+                                        layout: 'horizontal',
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    }
+                                }
+                            }]
+                        }
+
+                    });
+                  }
+                  else {
+                    $('#stock_tainer').text( data.check_info );
+                  }
+                    
+                }
+              });
+            });
+          </script>
+          <!-- 주식 검색 Suggestion -->
+          <script>
+                function stock_search() {
+                  var keyword = $('#stock_id').val();
+                  if (keyword != ''){
+                    $.ajax({
+                    url: "{% url 'homeapp:stock_search_api' %}?keyword="+keyword,
+                    dataType: 'json',
+                    success: (data) => {
+                      $('#stock_dropdown').empty();
+                      
+                      for (var i=0; i < data.sr.length; i++) {
+                        var divtag = document.createElement('div');
+                        var aTag = document.createElement('a');
+                        divtag.setAttribute('style', 'display:inline-block; border:1px solid black; margin: 0.2rem 0.2rem;')
+                        aTag.setAttribute('onClick', 'func2(this)');
+                        aTag.setAttribute('style', '')
+                        aTag.innerText = data.sr[i];
+                        divtag.append(aTag);
+                        // alert(data.sr[i]);
+                        $('#stock_dropdown').append(divtag);
+                      }
+                    }
+                  });
+                  }
+                  else {
+                    $('#stock_dropdown').empty();
+                  }
+                }
+                function func2(ele) {
+                  document.getElementById("stock_id").value = ele.text;
+                  $('#stock_dropdown').empty();
+                  $.ajax({
+                      url: "{% url 'homeapp:stock_sise_api' %}?stock_id="+ele.text,
+                      dataType: 'json',
+                      success: function (data) {
+                        if (data.check == 1){
+                          Highcharts.chart('stock_tainer', {
+                              title: {
+                                  text: ''
+                                  },
+                              series: [{
+                                  name: "Stock",
+                                  data: data.stock_list
+                                  }],
+
+                              responsive: {
+                                  rules: [{
+                                      condition: {
+                                          maxWidth: 500,
+                                      },
+                                      chartOptions: {
+                                          legend: {
+                                              layout: 'horizontal',
+                                              align: 'center',
+                                              verticalAlign: 'bottom'
+                                          }
+                                      }
+                                  }]
+                              }
+
+                          });
+                        }
+                        else {
+                          $('#stock_tainer').text( data.check_info );
+                        }
+                          
+                      }
+                    });
+                }
+          </script>
+          
         </div>
     </div>
     {% endif %}
