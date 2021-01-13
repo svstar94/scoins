@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
     # 코인 데이터 크롤링
     for code_id, code, _ in db_result:
-        coin(Scoin_DB, code_id, code)
+        coin_test(code_id, code)
 
     # 주식 code crawling
     get_stock_info(Scoin_DB)
