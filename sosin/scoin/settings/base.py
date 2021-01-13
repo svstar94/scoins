@@ -20,8 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 from .configs import SECRET_KEY as sk
 
+def read_secret(secret_name):
+    file = open('/run/secrets/' + secret_name)
+    secret = file.read()
+    secret = secret.strip()
+    file.close()
+
+    return secret
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = sk
+SECRET_KEY = read_secret('SSAC_SECRET_KEY')
 
 
 ALLOWED_HOSTS = [ '*' ]
@@ -88,7 +96,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'SCOIN',
         'USER' : 'sosin',
-        'PASSWORD' : '1234',
+        'PASSWORD' : read_secret('SSAC_MYSQL_PASSWORD'),
         'HOST' : 'ssacdb',
         'PORT' : '3306',
     }
