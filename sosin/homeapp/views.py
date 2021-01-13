@@ -124,7 +124,8 @@ class StockAPIView(APIView):
         else:
             # 상장정보가 아예 없는 경우
             data = {
-                'check' : 0
+                'check' : 0,
+                'check_info' : '상장 정보가 없습니다.'
             }
             return Response(data)
 

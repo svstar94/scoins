@@ -3,7 +3,7 @@ import pymysql
 def conn():
     return pymysql.connect(host='ssacdb',
                             port=3306,
-                            user='root',
+                            user='sosin',
                             passwd='1234',
                             db='SCOIN',
                             charset='utf8')
