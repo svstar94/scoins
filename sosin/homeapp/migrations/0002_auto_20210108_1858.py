@@ -11,15 +11,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='coin',
-            name='id',
+            name='data_id',
             field=models.AutoField(primary_key=True, serialize=False, verbose_name='ID'),
             preserve_default=False,
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name='stock',
-            name='id',
+            name='data_id',
             field=models.AutoField(primary_key=True, serialize=False, verbose_name='ID'),
             preserve_default=False,
         ),
