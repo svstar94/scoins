@@ -87,7 +87,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'SCOIN',
-        'USER' : 'root',
+        'USER' : 'sosin',
         'PASSWORD' : '1234',
         'HOST' : 'ssacdb',
         'PORT' : '3306',
