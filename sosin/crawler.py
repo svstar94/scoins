@@ -196,8 +196,6 @@ def get_stock_info(DB):
         name = '"%s"'%row['회사명']
         py2sql.insert(DB, 'homeapp_stockinfo', 'code, name' ,f'{code},{name}')
 
-from selenium import webdriver
-
 if __name__ == "__main__":
     Scoin_DB = py2sql.conn()
 

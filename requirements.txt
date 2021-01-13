@@ -13,3 +13,8 @@ soupsieve==2.1
 sqlparse==0.4.1
 zipp==3.4.0
 gunicorn==20.0.4
+requests
+mysqlclient
+PyMySQL
+requests
+pandas
