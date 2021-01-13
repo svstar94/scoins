@@ -5,12 +5,11 @@
     <div>
         <a href="{% url 'homeapp:home' %}" class="nav-item"><span>Home</span></a>
         |
-        <a href="#" class="nav-item"><span>Assets</span></a>
-        |
         {% if not user.is_authenticated %}
         <a href="{% url 'accountapp:login' %}?next={{ request.path }}" class="nav-item"><span>Login</span></a>|
         <a href="{% url 'accountapp:create' %}?next={{ request.path }}" class="nav-item"><span>Sign Up</span></a>
         {% else %}
+        <a href="{% url 'bookapp:detail' %}" class="nav-item"><span>Assets</span></a>|
         <a href="{% url 'accountapp:detail' pk=user.pk %}" class="nav-item"><span>MyPage</span></a>|
         <a href="{% url 'accountapp:logout' %}?next={{ request.path }}" class="nav-item"><span>Logout</span></a>
         {% endif %}

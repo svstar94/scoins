@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container" style="text-align: center; margin-top: 1rem;">
+        <h3>수입 지출 내역</h3>
+
+        {% if book_list %}
+        <div style="margin-top: 2rem;">
+            {% for book in book_list %}
+            {% include 'snippets/bookcard.html' with book=book %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <!-- <div>
+            우측 블록 (현황 시각화)
+        </div> -->
+    </div>
+{% endblock %}

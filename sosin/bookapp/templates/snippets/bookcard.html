@@ -1,0 +1,11 @@
+<div style="display: flex; justify-content: space-between; border-radius: 15rem; margin: 0.5rem 0rem; {% if book.iore %}background-color: azure;{% else %} background-color: mistyrose;{% endif %} padding: 0rem 1.5rem">
+    <div style="width: 12.5%;">{{ book.date.date }}</div>
+    <div style="width: 12.5%;">{% if book.iore %} 수익 {% else %} 지출 {% endif %}</div>
+    <div style="width: 12.5%;">{% if book.big_caegory %}{{ book.big_category }}{% else %}{% endif %}</div>
+    <div style="width: 12.5%;">{% if book.mid_category %}{{ book.mid_category }}{% else %}{% endif %}</div>
+    <div style="width: 12.5%;">{% if book.sma_category %}{{ book.sma_category }}{% else %}{% endif %}</div>
+    <div style="width: 12.5%;">{% if book.memo %}{{ book.memo }}{% else %}{% endif %}</div>
+    <div style="width: 12.5%;">{% if book.iore %} + {% else %} - {% endif %} {% if book.amount %}{{ book.amount }}{% else %}{% endif %}</div>
+    <div style="width: 12.5%;"><a href="{% url 'bookapp:delete' pk=book.pk %}">내역 삭제</a></div> <!-- 아이콘으로 변경 -->
+    
+</div>

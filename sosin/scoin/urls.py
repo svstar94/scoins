@@ -20,11 +20,15 @@ from django.conf import settings
 
 import os
 
+from homeapp.views import HomeView
+
 urlpatterns = [
+    path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     
     # custom app urls
     path('accounts/', include('accountapp.urls')),
     path('home/', include('homeapp.urls')),
-    path('assets/', include('assetapp.urls'))
+    path('assets/', include('assetapp.urls')),
+    path('books/', include('bookapp.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

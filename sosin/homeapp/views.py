@@ -17,9 +17,13 @@ from django.urls import reverse
 
 from crawler import *
 
-class HomeView(ListView):
+from django.views.generic.edit import FormMixin
+from bookapp.forms import AccountingCreationForm
+
+class HomeView(ListView, FormMixin):
     model = News
     template_name = 'homeapp/home.html'
+    form_class = AccountingCreationForm
     context_object_name = 'news_list'
     paginate_by = 5
 
@@ -40,20 +44,24 @@ class HomeView(ListView):
         labels = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
 
         if self.request.user.is_authenticated:
-            datas = Asset.objects.filter(id=self.request.user.asset_user.id).values()[0]
-            
-            pie_labels = []
-            pie_datas = []
-            for i, k in enumerate(datas):
-                if i < 3: continue
-                if datas[k]:
-                    pie_labels.append(id2ctg[k])
-                    pie_datas.append(datas[k])
+            try:
+                datas = Asset.objects.filter(id=self.request.user.asset_user.id).values()[0]
+                pie_labels = []
+                pie_datas = []
+                for i, k in enumerate(datas):
+                    if i < 3: continue
+                    if datas[k]:
+                        pie_labels.append(id2ctg[k])
+                        pie_datas.append(datas[k])
+
+                context['asset_list'] = Asset.objects.filter(id=self.request.user.asset_user.id).values()[0].values()
+                context['data'] = pie_datas
+                context['labels'] = pie_labels
+
+            except:
+                pass
 
             context['target_user'] = self.request.user
-            context['asset_list'] = Asset.objects.filter(id=self.request.user.asset_user.id).values()[0].values()
-            context['data'] = pie_datas
-            context['labels'] = pie_labels
 
         return context
 
@@ -102,7 +110,7 @@ class StockAPIView(APIView):
                 p.start()
                 data = {
                     'check' : 0,
-                    'check_info': '크롤링 중이거나 상장되지 않은 주식입니다.'
+                    'check_info': '크롤링 중이거나 상폐된 주식입니다.'
                 }
                 return Response(data)
             stock_labels = [stock.date.strftime('%Y%m%d') for stock in Stock.objects.filter(code_id=stock_idx)]

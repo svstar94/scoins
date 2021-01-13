@@ -1,0 +1,14 @@
+{% load bootstrap4 %}
+
+<div style="text-align: center; background-color: palegoldenrod; padding: 1rem; margin-bottom: 50px;">
+    <div class="mb-4">
+        <h4>수입 지출 기록</h4>
+    </div>
+
+    <form action="{% url 'bookapp:create' %}" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" class="btn btn-dark rounded-pill col-3 mt-4" value="입력">
+    </form>
+
+</div>

@@ -205,20 +205,18 @@ if __name__ == "__main__":
     news(Scoin_DB)
 
     # 코인 Code Crawling
-    # get_coin_info(Scoin_DB)
+    get_coin_info(Scoin_DB)
 
     # 코인 코드 가져오기
-    # db_result = py2sql.select(Scoin_DB, 'homeapp_coininfo', '*')
+    db_result = py2sql.select(Scoin_DB, 'homeapp_coininfo', '*')
     # print(db_result[2])
 
     # 코인 데이터 크롤링
-    # for code_id, code, _ in db_result:
-    #     if code_id < 3 :
-    #         continue
-    #     coin(Scoin_DB, code_id, code)
+    for code_id, code, _ in db_result:
+        coin(Scoin_DB, code_id, code)
 
     # 주식 code crawling
-    # get_stock_info(Scoin_DB)
+    get_stock_info(Scoin_DB)
 
     # 주식 코드 가져오기
     # db_result = py2sql.select(Scoin_DB, 'homeapp_stockinfo', '*')

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accountapp',
     'homeapp',
     'assetapp',
+    'bookapp',
     
 ]
 
@@ -60,6 +61,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'scoin.urls'
 import os
+from django.urls import reverse_lazy
 
 TEMPLATES = [
     {
@@ -132,9 +134,10 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+LOGIN_REDIRECT_URL = reverse_lazy('home')
+LOGOUT_REDIRECT_URL = reverse_lazy('accountapp:login')
 
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
