@@ -1,7 +1,7 @@
 import pymysql
 
 def conn():
-    return pymysql.connect(host='localhost',
+    return pymysql.connect(host='ssacdb',
                             port=3306,
                             user='root',
                             passwd='1234',
