@@ -71,9 +71,10 @@ class CoinAPIView(APIView):
     permission_classes = []
 
     def get(self, request): 
-        coin_id = request.GET.get('coin_id', '비트코인')
+        coin_id = request.GET.get('coin_id', 'b')
+        print(coin_id)
         coin_search = CoinInfo.objects.filter(name=coin_id).values()
-        print(coin_id, coin_search)
+        print(coin_search)
         if len(coin_search) == 1:
             coin_idx = coin_search[0]['id']
             coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
@@ -91,15 +92,14 @@ class CoinAPIView(APIView):
         }
         return Response(data)
 
-
-from multiprocessing import Process
+# from multiprocessing import Process
 class StockAPIView(APIView):
     
     authentication_classes = []
     permission_classes = []
 
     def get(self, request): 
-        stock_id = request.GET.get('stock_id', '삼성전자')
+        stock_id = request.GET.get('stock_id', 's')
         stock_idx = StockInfo.objects.filter(name=stock_id).values()
         print(stock_id, stock_idx)
 
