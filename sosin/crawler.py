@@ -231,4 +231,4 @@ if __name__ == "__main__":
     # for stock_id, code, _ in db_result:
     #     stock_test(stock_id, code)
     
-    db.close()
+    Scoin_DB.close()
