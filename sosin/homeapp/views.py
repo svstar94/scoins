@@ -69,27 +69,27 @@ class HomeView(ListView, FormMixin):
 
         return context
 
-def coin_test_api(request):
-    coin_name = request.POST['coin_name']
-    print(coin_name)
-    coin_search = CoinInfo.objects.filter(name=coin_name).values()
-    print(coin_search)
-    if len(coin_search) == 1:
-        coin_idx = coin_search[0]['id']
-        coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
-        if len(coin_list) != 0:
-            coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
-            data = {
-                'check' : 1,
-                'coin_list': coin_list,
-                'coin_labels': coin_labels
-            }
-            return Response(data)
-    data = {
-        'check' : 0,
-        'check_info': '코인 정보가 없습니다.'
-    }
-    return Response(data)
+# def coin_test_api(request):
+#     coin_name = request.POST['coin_name']
+#     print(coin_name)
+#     coin_search = CoinInfo.objects.filter(name=coin_name).values()
+#     print(coin_search)
+#     if len(coin_search) == 1:
+#         coin_idx = coin_search[0]['id']
+#         coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
+#         if len(coin_list) != 0:
+#             coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
+#             data = {
+#                 'check' : 1,
+#                 'coin_list': coin_list,
+#                 'coin_labels': coin_labels
+#             }
+#             return Response(data)
+#     data = {
+#         'check' : 0,
+#         'check_info': '코인 정보가 없습니다.'
+#     }
+#     return Response(data)
 
 class CoinAPIView(APIView):
     
@@ -103,7 +103,7 @@ class CoinAPIView(APIView):
         # print(coin_search)
         if len(coin_search) == 1:
             coin_idx = coin_search[0]['id']
-            result = Coin.objects.all()
+            # result = Coin.objects.all()
             # result = Coin.objects.filter(code_id=coin_idx)
             # coin_list = [coin['sise'] for coin in Coin.objects.filter(code_id=coin_idx).values()] # 여기서 오류나는데?
             # if len(coin_list) != 0:

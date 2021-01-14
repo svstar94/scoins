@@ -211,7 +211,6 @@
           <script>
             $('#btn_stock').on('click', (event)=>{
               var stock_id = $('#stock_id').val()
-              alert(stock_id);
               $.ajax({
                 url: "{% url 'homeapp:stock_sise_api' %}?stock_id="+stock_id,
                 contentType: "application/json; charset=utf-8",
@@ -334,10 +333,12 @@
       {% include 'bookapp/create.html' %}
     </div>
     <script>
-      $("#book_container").hide();
-      $("#book_btn").on('click', (event)=>{
+      $(document).ready(()=>{
+        $("#book_container").hide();
+        $("#book_btn").on('click', (event)=>{
         $("#book_container").slideToggle('3', );
-      });
+        });
+      })
     </script>
     {% endif %}
 
