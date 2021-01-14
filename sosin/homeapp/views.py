@@ -139,8 +139,6 @@ class CoinAPIView(APIView):
         }
         return Response(data)
 
-    def post(self, request):
-
 
 # from multiprocessing import Process
 class StockAPIView(APIView):
