@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
     {% if not user.is_authenticated %}
     <div style="text-align: center;">
@@ -85,12 +84,14 @@
               <script>
                 $('#btn_coin').on('click', (event) =>{
                   var coin_id = $('#coin_id').val();
-                  alert(coin_id);
                   $.ajax({
                     url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+coin_id,
+                    contentType: "application/json; charset=utf-8",
+                    data : {},
                     dataType: 'json',
                     success: function (data) {
                         if (data.check == 1) {
+                          alert(data);
                           Highcharts.chart('coin_tainer', {
                               
                               title: {
@@ -217,6 +218,8 @@
               alert(stock_id);
               $.ajax({
                 url: "{% url 'homeapp:stock_sise_api' %}?stock_id="+stock_id,
+                contentType: "application/json; charset=utf-8",
+                data : {},
                 dataType: 'json',
                 success: function (data) {
                   if (data.check == 1){

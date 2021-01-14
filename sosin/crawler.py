@@ -216,7 +216,7 @@ if __name__ == "__main__":
 
     # 코인 코드 가져오기
     db_result = py2sql.select(Scoin_DB, 'homeapp_coininfo', '*')
-    # print(db_result[2])
+    print(db_result[2])
 
     # 코인 데이터 크롤링
     for code_id, code, _ in db_result:
@@ -226,6 +226,8 @@ if __name__ == "__main__":
     get_stock_info(Scoin_DB)
 
     # 주식 코드 가져오기
-    # db_result = py2sql.select(Scoin_DB, 'homeapp_stockinfo', '*')
-    # print(db_result[0])
+    db_result = py2sql.select(Scoin_DB, 'homeapp_stockinfo', '*')
+    print(db_result[0])
+    # for stock_id, code, _ in db_result:
+    #     stock_test(stock_id, code)
     
