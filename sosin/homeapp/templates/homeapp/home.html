@@ -85,11 +85,13 @@
                 function coin_chart(){
                   var coin_id = $('#coin_id').val();
                   alert(coin_id);
+                  
                   $.ajax({
                     type: 'POST',
                     url: "{% url 'homeapp:coin_sise_api' %}",
                     data: {
-                      coin_name: $('#coin_id').val()
+                      coin_name: $('#coin_id').val(),
+                      csrfmiddlewaretoken: '{{ csrf_token }}',
                     },
                     success: function (data) {
                         if (data.check == 1) {
