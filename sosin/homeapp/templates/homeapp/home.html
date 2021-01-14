@@ -17,6 +17,13 @@
                 Top News Today
             </h3>
             <div class="container">
+              {% for news in news_list %}
+              <a href="{{ news.url }}" target="_blank">
+                  {% include 'snippets/news.html' with news=news %}
+              </a>
+              {% endfor %}
+          
+              {% include 'snippets/pagination.html' with page_obj=page_obj %}
             </div>
         </div>
 

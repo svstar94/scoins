@@ -33,17 +33,17 @@ class HomeView(ListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        # paginator = context['paginator']
-        # page_numbers_range = 5
-        # max_index = len(paginator.page_range)
-        # page = self.request.GET.get('page')
-        # current_page = int(page) if page else 1
-        # start_index = int((current_page - 1) / page_numbers_range) * page_numbers_range
-        # end_index = start_index + page_numbers_range
-        # if end_index >= max_index:
-        #     end_index = max_index
-        # page_range = paginator.page_range[start_index:end_index]
-        # context['page_range'] = page_range
+        paginator = context['paginator']
+        page_numbers_range = 5
+        max_index = len(paginator.page_range)
+        page = self.request.GET.get('page')
+        current_page = int(page) if page else 1
+        start_index = int((current_page - 1) / page_numbers_range) * page_numbers_range
+        end_index = start_index + page_numbers_range
+        if end_index >= max_index:
+            end_index = max_index
+        page_range = paginator.page_range[start_index:end_index]
+        context['page_range'] = page_range
 
         labels = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
 
@@ -91,27 +91,6 @@ def coin_test_api(request):
     }
     return Response(data)
 
-# def coin_test(code_id, coincode=None):
-#     DB = py2sql.conn()
-#     print('코인 크롤링 시작')
-#     # 일별 비트코인 데이터
-#     BASE_URL = 'https://api.bithumb.com/public/candlestick_trview/{}_KRW/24H'
-#     r = requests.get(BASE_URL.format(coincode))
-#     try:
-#         res = json.loads(r.text)['data']
-#     except:
-#         print( '코인 데이터 가져오기 오류' )
-#         return 'no data'
-#     # 'c' = 종가
-#     # 't' = 기준 시간
-#     # 'v' = 거래량 (코인 개수 기준)
-#     values = []
-#     for i in range(len(res['t'])):
-#         values.append('"%s"'%res['c'][i])
-    
-#     return values
-
-
 class CoinAPIView(APIView):
     
     authentication_classes = []
@@ -124,7 +103,8 @@ class CoinAPIView(APIView):
         # print(coin_search)
         if len(coin_search) == 1:
             coin_idx = coin_search[0]['id']
-            result = Coin.objects.filter(code_id=coin_idx)
+            result = Coin.objects.all()
+            # result = Coin.objects.filter(code_id=coin_idx)
             # coin_list = [coin['sise'] for coin in Coin.objects.filter(code_id=coin_idx).values()] # 여기서 오류나는데?
             # if len(coin_list) != 0:
             #     coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
