@@ -36,7 +36,9 @@ def coin(DB, code_id, coincode=None):
 
         # db에 입력
         try: py2sql.insert(DB, 'homeapp_coin', coin_columns, ','.join(values))
-        except: pass
+        except: 
+            print('코인 DB 입력 오류')
+            pass
 
     # pd.DataFrame(res).to_csv('temp.csv')
 
@@ -50,6 +52,7 @@ def coin_test(code_id, coincode=None):
     try:
         res = json.loads(r.text)['data']
     except:
+        print( '코인 데이터 가져오기 오류' )
         return 'no data'
     # 'c' = 종가
     # 't' = 기준 시간
@@ -66,7 +69,9 @@ def coin_test(code_id, coincode=None):
 
         # db에 입력
         try: py2sql.insert(DB, 'homeapp_coin', coin_columns, ','.join(values))
-        except: pass
+        except: 
+            print('코인 DB 입력 오류')
+            pass
     
     return 'finish'
     # pd.DataFrame(res).to_csv('temp.csv')
@@ -100,6 +105,7 @@ def stock(DB, stockcode=None): # stock code는 stockinfo의 id값
         sp = BeautifulSoup(r.text, 'html.parser')
         results = sp.select('tr')
         if len(results) == 0:
+            print('주식 데이터 가져오기 오류')
             return
         for i, result in enumerate(results):
             if i in [2,3,4,5,6,10,11,12,13,14]:
@@ -114,7 +120,9 @@ def stock(DB, stockcode=None): # stock code는 stockinfo의 id값
                 # db에 입력
                 try:
                     py2sql.insert(DB, 'homeapp_stock', stock_columns, ','.join(values))
-                except: pass
+                except: 
+                    print('주식 DB 입력 오류')
+                    pass
 
 def stock_test(code_id, stockcode=None):
     DB = py2sql.conn()
@@ -190,6 +198,7 @@ def news(DB):
         sample_news = news_list
 
 def get_stock_info(DB):
+    print('주식 정보 가져오기')
     dfstockcode = pd.read_html('http://kind.krx.co.kr/corpgeneral/corpList.do?method=download', header=0)[0]
     for row in dfstockcode.iloc:
         code = '"%06d"'%row['종목코드']
@@ -219,39 +228,4 @@ if __name__ == "__main__":
     # 주식 코드 가져오기
     # db_result = py2sql.select(Scoin_DB, 'homeapp_stockinfo', '*')
     # print(db_result[0])
-
-    # 주식 시세 크롤링
-    # driver = webdriver.Chrome(r'D:\INSTA\insta_tistory\webdriver\chromedriver.exe')
-    # stock_columns = 'date, code_id, sise, amount'
-    # # Tuple -> column values
-    # for code_id, code, name in db_result:
-    #     if code_id < 3:
-    #         continue
-    #     for p in range(1, 30):
-    #         driver.get('https://finance.naver.com/item/sise_day.nhn?code={}&page={}'.format(code, p))
-    #         results = driver.find_elements_by_css_selector('tr')
-    #         try:
-    #             if datetime.strptime(results[5].find_element_by_css_selector('td').text, '%Y.%m.%d') < datetime(2018,1,1):
-    #                 time.sleep(1)
-    #                 break
-    #         except:
-    #             break
-
-    #         for i, result in enumerate(results):
-    #             if i in [2,3,4,5,6,10,11,12,13,14]:
-    #                 stocks = result.find_elements_by_css_selector('td')
-
-    #                 values = []
-    #                 # yyyy-mm-dd hh:mm:ss
-    #                 values.append('"%s"'%stocks[0].text.replace('.', '-'))
-    #                 values.append('"%s"'%code_id)
-    #                 values.append('"%s"'%stocks[1].text.replace(',', ''))
-    #                 values.append('"%s"'%stocks[-1].text.replace(',', ''))
-    #                 if values[0] == '""':
-    #                     continue
-
-    #                 # db에 입력
-    #                 # try:
-    #                 py2sql.insert(Scoin_DB, 'homeapp_stock', stock_columns, ','.join(values))
-    #                 # except: pass
-    #         time.sleep(1)
+    

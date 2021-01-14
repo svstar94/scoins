@@ -73,6 +73,7 @@ class CoinAPIView(APIView):
     def get(self, request): 
         coin_id = request.GET.get('coin_id', '비트코인')
         coin_search = CoinInfo.objects.filter(name=coin_id).values()
+        print(coin_id, coin_search)
         if len(coin_search) == 1:
             coin_idx = coin_search[0]['id']
             coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
@@ -100,19 +101,21 @@ class StockAPIView(APIView):
     def get(self, request): 
         stock_id = request.GET.get('stock_id', '삼성전자')
         stock_idx = StockInfo.objects.filter(name=stock_id).values()
+        print(stock_id, stock_idx)
+
         if len(stock_idx) == 1:
             stock_idx = stock_idx[0]['id']
             stock_list = list(reversed([stock.sise for stock in Stock.objects.filter(code_id=stock_idx)]))
-            if len(stock_list) == 0:
-                stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
-                # 크롤링 하는 경우
-                p = Process(target=stock_test, args=(stock_idx, stock_code, ))
-                p.start()
-                data = {
-                    'check' : 0,
-                    'check_info': '크롤링 중이거나 상폐된 주식입니다.'
-                }
-                return Response(data)
+            # if len(stock_list) == 0:
+            #     stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
+            #     # 크롤링 하는 경우
+            #     p = Process(target=stock_test, args=(stock_idx, stock_code, ))
+            #     p.start()
+            #     data = {
+            #         'check' : 0,
+            #         'check_info': '크롤링 중이거나 상폐된 주식입니다.'
+            #     }
+            #     return Response(data)
             stock_labels = [stock.date.strftime('%Y%m%d') for stock in Stock.objects.filter(code_id=stock_idx)]
             
             data = {
