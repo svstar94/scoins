@@ -29,7 +29,7 @@ class HomeView(ListView, FormMixin):
     template_name = 'homeapp/home.html'
     form_class = AccountingCreationForm
     context_object_name = 'news_list'
-    paginate_by = 5
+    # paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
@@ -119,23 +119,24 @@ class CoinAPIView(APIView):
 
     def get(self, request): 
         coin_id = request.GET.get('coin_id', 'b')
-        print(coin_id)
-        coin_search = CoinInfo.objects.filter(name=coin_id).values()
-        print(coin_search)
-        if len(coin_search) == 1:
-            coin_idx = coin_search[0]['id']
-            coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
-            if len(coin_list) != 0:
-                coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
-                data = {
-                    'check' : 1,
-                    'coin_list': coin_list,
-                    'coin_labels': coin_labels
-                }
-                return Response(data)
+        # print(coin_id)
+        # coin_search = CoinInfo.objects.filter(name=coin_id).values()
+        # print(coin_search)
+        # if len(coin_search) == 1:
+        #     coin_idx = coin_search[0]['id']
+        #     coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
+        #     if len(coin_list) != 0:
+        #         coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
+        #         data = {
+        #             'check' : 1,
+        #             'coin_list': coin_list,
+        #             'coin_labels': coin_labels
+        #         }
+        #         return Response(data)
         data = {
             'check' : 0,
-            'check_info': '코인 정보가 없습니다.'
+            'check_info': '코인 정보가 없습니다.',
+            'coin_id' : coin_id,
         }
         return Response(data)
 
