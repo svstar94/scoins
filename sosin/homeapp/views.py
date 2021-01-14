@@ -19,6 +19,10 @@ from crawler import *
 
 from django.views.generic.edit import FormMixin
 from bookapp.forms import AccountingCreationForm
+from sosin import py2sql
+import requests
+import json
+import time
 
 class HomeView(ListView, FormMixin):
     model = News
@@ -66,9 +70,9 @@ class HomeView(ListView, FormMixin):
         return context
 
 def coin_test_api(request):
-    coin_id = request.GET.get('coin_id', 'b')
-    print(coin_id)
-    coin_search = CoinInfo.objects.filter(name=coin_id).values()
+    coin_name = request.POST['coin_name']
+    print(coin_name)
+    coin_search = CoinInfo.objects.filter(name=coin_name).values()
     print(coin_search)
     if len(coin_search) == 1:
         coin_idx = coin_search[0]['id']
@@ -86,6 +90,26 @@ def coin_test_api(request):
         'check_info': '코인 정보가 없습니다.'
     }
     return Response(data)
+
+def coin_test(code_id, coincode=None):
+    DB = py2sql.conn()
+    print('코인 크롤링 시작')
+    # 일별 비트코인 데이터
+    BASE_URL = 'https://api.bithumb.com/public/candlestick_trview/{}_KRW/24H'
+    r = requests.get(BASE_URL.format(coincode))
+    try:
+        res = json.loads(r.text)['data']
+    except:
+        print( '코인 데이터 가져오기 오류' )
+        return 'no data'
+    # 'c' = 종가
+    # 't' = 기준 시간
+    # 'v' = 거래량 (코인 개수 기준)
+    values = []
+    for i in range(len(res['t'])):
+        values.append('"%s"'%res['c'][i])
+    
+    return values
 
 
 class CoinAPIView(APIView):
@@ -114,6 +138,9 @@ class CoinAPIView(APIView):
             'check_info': '코인 정보가 없습니다.'
         }
         return Response(data)
+
+    def post(self, request):
+
 
 # from multiprocessing import Process
 class StockAPIView(APIView):
