@@ -117,7 +117,7 @@ class CoinAPIView(APIView):
         data = {
             'check' : 0,
             'check_info': '코인 정보가 없습니다.',
-            'result' : result,
+            # 'result' : result,
         }
         return Response(data)
 
