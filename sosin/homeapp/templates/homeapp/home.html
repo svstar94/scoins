@@ -84,6 +84,7 @@
               <script>
                 function coin_chart(){
                   var coin_id = $('#coin_id').val();
+                  alert(coin_id);
                   $.ajax({
                     url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+coin_id,
                     dataType: 'json',
