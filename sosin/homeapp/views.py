@@ -124,7 +124,8 @@ class CoinAPIView(APIView):
         # print(coin_search)
         if len(coin_search) == 1:
             coin_idx = coin_search[0]['id']
-            coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
+            
+            coin_list = [coin['sise'] for coin in Coin.objects.filter(code_id=coin_idx).values()] # 여기서 오류나는데?
             # if len(coin_list) != 0:
             #     coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
             #     data = {
