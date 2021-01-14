@@ -72,9 +72,8 @@
               </div>
               <!-- 코인 차트 검색 -->
               <script>
-                  var coin_id = $('#coin_id').val();
-                  alert(coin_id);
                   $("#btn_coin").on('click', ()=>{
+                    var coin_id = $("#coin_id").val();
                     $.ajax({
                     url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+coin_id,
                     dataType: 'json',
@@ -82,7 +81,6 @@
                         if (data.check == 1) {
                           alert(data);
                           Highcharts.chart('coin_tainer', {
-                              
                               title: {
                                   text: ''
                                   },
