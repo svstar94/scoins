@@ -101,6 +101,7 @@ class CoinAPIView(APIView):
             coin_id = request.GET.get('coin_id', 'b')
             # print(coin_id)
             coin_search = CoinInfo.objects.filter(name=coin_id).values()
+            r = Coin.objects.all()
             # print(coin_search)
             # if len(coin_search) == 1:
                 # coin_idx = coin_search[0]['id']
@@ -119,6 +120,7 @@ class CoinAPIView(APIView):
                 'check' : 0,
                 'check_info': '코인 정보가 없습니다.',
                 'coin_search' : coin_search,
+                'coins' : r,
             }
             return Response(data)
         except:
