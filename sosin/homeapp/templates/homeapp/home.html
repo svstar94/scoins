@@ -90,32 +90,32 @@
                     success: function (data) {
                         if (data.check == 1) {
                           alert(data);
-                          Highcharts.chart('coin_tainer', {
+                          // Highcharts.chart('coin_tainer', {
                               
-                              title: {
-                                  text: ''
-                                  },
-                              series: [{
-                                  name: "Coin",
-                                  data: data.coin_list
-                                  }],
+                          //     title: {
+                          //         text: ''
+                          //         },
+                          //     series: [{
+                          //         name: "Coin",
+                          //         data: data.coin_list
+                          //         }],
 
-                              responsive: {
-                                  rules: [{
-                                      condition: {
-                                          maxWidth: 100
-                                      },
-                                      chartOptions: {
-                                          legend: {
-                                              layout: 'horizontal',
-                                              align: 'center',
-                                              verticalAlign: 'bottom'
-                                          }
-                                      }
-                                  }]
-                              }
+                          //     responsive: {
+                          //         rules: [{
+                          //             condition: {
+                          //                 maxWidth: 100
+                          //             },
+                          //             chartOptions: {
+                          //                 legend: {
+                          //                     layout: 'horizontal',
+                          //                     align: 'center',
+                          //                     verticalAlign: 'bottom'
+                          //                 }
+                          //             }
+                          //         }]
+                          //     }
 
-                          });
+                          // });
                         }
                         else {
                           $('#coin_tainer').text( data.check_info )
