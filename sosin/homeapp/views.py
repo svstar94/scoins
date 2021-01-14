@@ -65,6 +65,29 @@ class HomeView(ListView, FormMixin):
 
         return context
 
+def coin_test_api(request):
+    coin_id = request.GET.get('coin_id', 'b')
+    print(coin_id)
+    coin_search = CoinInfo.objects.filter(name=coin_id).values()
+    print(coin_search)
+    if len(coin_search) == 1:
+        coin_idx = coin_search[0]['id']
+        coin_list = [coin.sise for coin in Coin.objects.filter(code_id=coin_idx)]
+        if len(coin_list) != 0:
+            coin_labels = [coin.date.strftime('%Y%m%d') for coin in Coin.objects.filter(code_id=coin_idx)]
+            data = {
+                'check' : 1,
+                'coin_list': coin_list,
+                'coin_labels': coin_labels
+            }
+            return Response(data)
+    data = {
+        'check' : 0,
+        'check_info': '코인 정보가 없습니다.'
+    }
+    return Response(data)
+
+
 class CoinAPIView(APIView):
     
     authentication_classes = []
