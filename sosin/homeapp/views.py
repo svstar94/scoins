@@ -19,7 +19,7 @@ from crawler import *
 
 from django.views.generic.edit import FormMixin
 from bookapp.forms import AccountingCreationForm
-from sosin import py2sql
+# from sosin import py2sql
 import requests
 import json
 import time
@@ -91,25 +91,25 @@ def coin_test_api(request):
     }
     return Response(data)
 
-def coin_test(code_id, coincode=None):
-    DB = py2sql.conn()
-    print('코인 크롤링 시작')
-    # 일별 비트코인 데이터
-    BASE_URL = 'https://api.bithumb.com/public/candlestick_trview/{}_KRW/24H'
-    r = requests.get(BASE_URL.format(coincode))
-    try:
-        res = json.loads(r.text)['data']
-    except:
-        print( '코인 데이터 가져오기 오류' )
-        return 'no data'
-    # 'c' = 종가
-    # 't' = 기준 시간
-    # 'v' = 거래량 (코인 개수 기준)
-    values = []
-    for i in range(len(res['t'])):
-        values.append('"%s"'%res['c'][i])
+# def coin_test(code_id, coincode=None):
+#     DB = py2sql.conn()
+#     print('코인 크롤링 시작')
+#     # 일별 비트코인 데이터
+#     BASE_URL = 'https://api.bithumb.com/public/candlestick_trview/{}_KRW/24H'
+#     r = requests.get(BASE_URL.format(coincode))
+#     try:
+#         res = json.loads(r.text)['data']
+#     except:
+#         print( '코인 데이터 가져오기 오류' )
+#         return 'no data'
+#     # 'c' = 종가
+#     # 't' = 기준 시간
+#     # 'v' = 거래량 (코인 개수 기준)
+#     values = []
+#     for i in range(len(res['t'])):
+#         values.append('"%s"'%res['c'][i])
     
-    return values
+#     return values
 
 
 class CoinAPIView(APIView):
