@@ -121,7 +121,10 @@
                           $('#coin_tainer').text( data.check_info )
                         }
                     }
+                    ,error:function(request,status,error){
+                      alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);}
                   });
+                  
                 }
                 // $('#btn_coin').on('click', (event) =>{
                   
