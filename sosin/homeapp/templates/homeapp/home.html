@@ -12,21 +12,11 @@
     </div>
     {% else %}
     <div style="display: flex; width: 100%; height: 100%; font-size: .9rem; font-family: 'NanumSquareRoundOTFR'; text-align: center; flex-wrap: wrap;">
-      
-      
-
         <div style="display: block; width: 50%; height: auto;">
             <h3>
                 Top News Today
             </h3>
             <div class="container">
-                {% for news in news_list %}
-                <a href="{{ news.url }}" target="_blank">
-                    {% include 'snippets/news.html' with news=news %}
-                </a>
-                {% endfor %}
-            
-                {% include 'snippets/pagination.html' with page_obj=page_obj %}
             </div>
         </div>
 
@@ -82,17 +72,11 @@
               </div>
               <!-- 코인 차트 검색 -->
               <script>
-                function coin_chart(){
                   var coin_id = $('#coin_id').val();
                   alert(coin_id);
-                  
                   $.ajax({
-                    type: 'POST',
-                    url: "{% url 'homeapp:coin_sise_api' %}",
-                    data: {
-                      coin_name: $('#coin_id').val(),
-                      csrfmiddlewaretoken: '{{ csrf_token }}',
-                    },
+                    url: "{% url 'homeapp:coin_sise_api' %}?coin_id="+coin_id,
+                    dataType: 'json',
                     success: function (data) {
                         if (data.check == 1) {
                           alert(data);
@@ -130,11 +114,6 @@
                     ,error:function(request,status,error){
                       alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);}
                   });
-                  
-                }
-                // $('#btn_coin').on('click', (event) =>{
-                  
-                // });
               </script>
               <!-- 코인 검색 Suggestion -->
               <script>
