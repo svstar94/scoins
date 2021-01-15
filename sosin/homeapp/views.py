@@ -130,23 +130,23 @@ class StockAPIView(APIView):
 
         if len(stock_idx) == 1:
             stock_idx = stock_idx[0]['id']
-            stock_list = list(reversed([stock.sise for stock in Stock.objects.filter(code_id=stock_idx)]))
-            if len(stock_list) == 0:
+            # stock_list = list(reversed([stock.sise for stock in Stock.objects.filter(code_id=stock_idx)]))
+            # if len(stock_list) == 0:
                 # stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
                 # 크롤링 하는 경우
                 # p = Process(target=stock_test, args=(stock_idx, stock_code, ))
                 # p.start()
-                data = {
-                    'check' : 0,
-                    'check_info': '크롤링 중이거나 상폐된 주식입니다.'
-                }
-                return Response(data)
+                # data = {
+                #     'check' : 0,
+                #     'check_info': '크롤링 중이거나 상폐된 주식입니다.'
+                # }
+                # return Response(data)
             stock_labels = [stock.date.strftime('%Y%m%d') for stock in Stock.objects.filter(code_id=stock_idx)]
             
             data = {
                 'check' : 1,
-                'stock_list': stock_list,
-                'stock_labels': stock_labels
+                # 'stock_list': stock_list,
+                # 'stock_labels': stock_labels
             }
             return Response(data)
         else:
