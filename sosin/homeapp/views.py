@@ -33,19 +33,19 @@ class HomeView(ListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        # paginator = context['paginator']
-        # page_numbers_range = 5
-        # max_index = len(paginator.page_range)
-        # page = self.request.GET.get('page')
-        # current_page = int(page) if page else 1
-        # start_index = int((current_page - 1) / page_numbers_range) * page_numbers_range
-        # end_index = start_index + page_numbers_range
-        # if end_index >= max_index:
-        #     end_index = max_index
-        # page_range = paginator.page_range[start_index:end_index]
-        # context['page_range'] = page_range
+        paginator = context['paginator']
+        page_numbers_range = 5
+        max_index = len(paginator.page_range)
+        page = self.request.GET.get('page')
+        current_page = int(page) if page else 1
+        start_index = int((current_page - 1) / page_numbers_range) * page_numbers_range
+        end_index = start_index + page_numbers_range
+        if end_index >= max_index:
+            end_index = max_index
+        page_range = paginator.page_range[start_index:end_index]
+        context['page_range'] = page_range
 
-        # labels = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
+        labels = [id2ctg[field.name] for field in list(get_model_fields(Asset))[3:]]
 
         if self.request.user.is_authenticated:
             try:
@@ -117,7 +117,7 @@ class CoinAPIView(APIView):
         return Response(data)
 
 
-# from multiprocessing import Process
+from multiprocessing import Process
 class StockAPIView(APIView):
     
     authentication_classes = []
@@ -131,16 +131,16 @@ class StockAPIView(APIView):
         if len(stock_idx) == 1:
             stock_idx = stock_idx[0]['id']
             stock_list = list(reversed([stock.sise for stock in Stock.objects.filter(code_id=stock_idx)]))
-            # if len(stock_list) == 0:
-            #     stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
-            #     # 크롤링 하는 경우
-            #     p = Process(target=stock_test, args=(stock_idx, stock_code, ))
-            #     p.start()
-            #     data = {
-            #         'check' : 0,
-            #         'check_info': '크롤링 중이거나 상폐된 주식입니다.'
-            #     }
-            #     return Response(data)
+            if len(stock_list) == 0:
+                stock_code = StockInfo.objects.filter(name=stock_id).values()[0]['code']
+                # 크롤링 하는 경우
+                p = Process(target=stock_test, args=(stock_idx, stock_code, ))
+                p.start()
+                data = {
+                    'check' : 0,
+                    'check_info': '크롤링 중이거나 상폐된 주식입니다.'
+                }
+                return Response(data)
             stock_labels = [stock.date.strftime('%Y%m%d') for stock in Stock.objects.filter(code_id=stock_idx)]
             
             data = {
